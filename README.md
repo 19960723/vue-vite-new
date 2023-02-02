@@ -20,6 +20,8 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 tailwind.css
 element-plus
 mock
+   - mockjs
+   - @types/mockjs
 
 typescript
 vite
@@ -30,6 +32,12 @@ vue
    - vue-router
    - vuex | pinia
    - vueuse
+
+
+node
+   - qs 
+   - @types/qs
+
 
 代码验证 
 volar
