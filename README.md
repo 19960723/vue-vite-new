@@ -20,19 +20,26 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 tailwind.css
 element-plus
 mock
-vue-router
-vuex | pinia
-vueUse
+
 typescript
 vite
 axios
 sass
 
-代码验证 volar
+vue
+   - vue-router
+   - vuex | pinia
+   - vueuse
 
+代码验证 
+volar
 
 prettier
+   - prettier       
 eslint
+   - eslint eslint-plugin-vue
+   - eslint-config-prettier eslint-define-config eslint-plugin-html eslint-plugin-prettier eslint-plugin-jest
+   - @typescript-eslint/eslint-plugin @typescript-eslint/parser
 stylelint 
 
 选择
@@ -45,7 +52,8 @@ stylelint
    - uuid
    - hls.js
    - DPlayer
-git
+git 
+   - ssh  git@github.com:19960723/vue-vite-new.git
 
 单元测试
-jest
+   - jest eslint-plugin-jest ts-jest @types/jest
