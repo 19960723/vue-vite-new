@@ -22,6 +22,7 @@ element-plus
 mock
    - mockjs
    - @types/mockjs
+   - vite-plugin-mock
 
 typescript
 vite
@@ -65,3 +66,7 @@ git
 
 单元测试
    - jest eslint-plugin-jest ts-jest @types/jest
+
+
+全局组件导入
+   - unplugin-vue-define-options 对组件进行注册命名

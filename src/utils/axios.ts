@@ -2,7 +2,7 @@ import axios, {
   AxiosRequestConfig,
   AxiosInstance,
   AxiosResponse,
-  AxiosPromise,
+  // AxiosPromise,
   Canceler,
 } from 'axios';
 import { useMainStore } from '@/store';
