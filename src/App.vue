@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div>
+  <!-- <div>
     <choose-area />
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
@@ -12,7 +12,10 @@
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <HelloWorld msg="Vite + Vue" /> -->
+  <div>
+    <router-view />
+  </div>
 </template>
 
 <style scoped>
