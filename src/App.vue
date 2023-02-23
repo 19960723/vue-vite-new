@@ -1,16 +1,16 @@
 <script setup lang="ts">
   // import HelloWorld from './components/HelloWorld.vue';
-  import useHeaderNav from './hooks/useHeaderNav';
-  import { ref } from 'vue';
-  const title = ref('首页');
-  const { backLeft } = useHeaderNav();
-  const onClickRight = () => {};
+  // import useHeaderNav from './hooks/useHeaderNav';
+  // import { ref } from 'vue';
+  // const title = ref('首页');
+  // const { backLeft } = useHeaderNav();
+  // const onClickRight = () => {};
 </script>
 
 <template>
   <div>
     <!-- <HeaderCom title="首页" /> -->
-    <van-nav-bar :title="title" left-arrow @click-left="backLeft" @click-right="onClickRight" />
+    <!-- <van-nav-bar :title="title" left-arrow @click-left="backLeft" @click-right="onClickRight" /> -->
     <router-view />
   </div>
   <!-- <div>

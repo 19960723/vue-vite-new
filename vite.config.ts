@@ -27,14 +27,6 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
       }),
       DefineOptions(),
     ],
-    css: {
-      // 🔥此处添加全局scss🔥
-      preprocessorOptions: {
-        scss: {
-          // additionalData: '@import "@/styles/globalVar.scss"',
-        },
-      },
-    },
     resolve: {
       alias: [
         {
@@ -42,6 +34,14 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
           replacement: pathResolve('src') + '/',
         },
       ],
+    },
+    css: {
+      // 🔥此处添加全局scss🔥
+      preprocessorOptions: {
+        scss: {
+          // additionalData: '@import "@/assets/styles/globalVar.scss"',
+        },
+      },
     },
   };
 });
