@@ -1,18 +1,10 @@
-import { defineStore } from 'pinia';
+import type { App } from 'vue';
+import { createPinia } from 'pinia';
 
-export const useMainStore = defineStore('main', {
-  state: () => {
-    return { token: '0' };
-  },
-  actions: {
-    async setToken(token: string) {
-      this.token = token;
-      this.$patch((state) => {
-        state.token = token;
-      });
-    },
-  },
-  getters: {
-    token: (state) => state.token,
-  },
-});
+const store = createPinia();
+
+export function setupStore(app: App<Element>) {
+  app.use(store);
+}
+
+export { store };

@@ -5,11 +5,13 @@ import axios, {
   // AxiosPromise,
   Canceler,
 } from 'axios';
-import { useMainStore } from '@/store';
+import { useUserStore } from '@/store/modules/user';
 import qs from 'qs';
 
 const CancelToken = axios.CancelToken;
-const mainStore = useMainStore();
+console.log(useUserStore);
+const userStore = useUserStore();
+
 export interface HttpResponse {
   code: number;
   data?: any;
@@ -72,7 +74,7 @@ class HttpRequest {
   interceptors(service: AxiosInstance) {
     service.interceptors.request.use(
       (config) => {
-        const token = mainStore.token;
+        const token = userStore.token;
         if (token) {
           // config.headers && config.headers.common['X-Access-Token'] = token;
           config.headers && config.headers.common.setAuthorization(`Bearer ${token}`);
@@ -123,7 +125,7 @@ class HttpRequest {
   }
 
   // 请求方法
-  post(url: string, data?: unknown): Promise<AxiosResponse> | Promise<HttpResponse> {
+  post(url: string, data?: unknown): Promise<AxiosResponse> | HttpResponse {
     return this.request({
       method: 'post',
       url: url,
