@@ -10,7 +10,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ChooseArea: typeof import('./src/components/chooseArea.vue')['default']
-    HeaderCom: typeof import('./src/components/HeaderCom/index.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -20,6 +19,5 @@ declare module '@vue/runtime-core' {
     VanField: typeof import('vant/es')['Field']
     VanForm: typeof import('vant/es')['Form']
     VanImage: typeof import('vant/es')['Image']
-    VanNavBar: typeof import('vant/es')['NavBar']
   }
 }
