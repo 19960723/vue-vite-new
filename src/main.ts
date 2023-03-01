@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { setupStore } from './store';
+import './assets/styles/tailwind.css';
 import './assets/styles/globalVar.scss';
 import 'vant/lib/index.css';
 import { registerGlobComp } from '@/components/registerGlobComp';

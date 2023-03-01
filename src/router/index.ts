@@ -1,5 +1,12 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { useUserStore } from '@/store/modules/user';
+
+import emailRouter from './modules/email';
+import bookRouter from './modules/book';
+import messageRouter from './modules/message';
+import documentRouter from './modules/document';
+import workRouter from './modules/work';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +28,9 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: () => import('@/views/user/register.vue'),
   },
+  // ...emailRouter,
+  // ...bookRouter,
+
   {
     path: '/:pathMatch(.*)*',
     redirect: '/error',
@@ -37,4 +47,16 @@ export const router = createRouter({
   strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 }),
 });
+
+//  路由守护
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+  const isLogin = userStore.token;
+  if (to.path === '/login' || to.path === '/register') {
+    isLogin ? next('/') : next();
+  } else {
+    isLogin ? next() : next('/login');
+  }
+});
+
 export default router;

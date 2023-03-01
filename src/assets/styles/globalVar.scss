@@ -1,2 +1,11 @@
-$injectedColor: orange;
 @import url('./common.scss');
+
+$injectedColor: orange;
+
+body, html {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+#app { height: 100%; }

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { router } from '@/router';
 import type { UserInfo } from '/#/store';
 import { loginApi } from '@/api/user';
 import { showToast } from 'vant';
@@ -27,8 +28,10 @@ export const useUserStore = defineStore('user', {
         const { code, success, message, result } = data as any;
         if (code == 200 && success) {
           showToast({ message: '登录成功' });
-          const { imToken, imUserId, token, username, senior, realName } = result;
-          this.setToken(token);
+          // const { imToken, imUserId, token, username, senior, realName } = result;
+          this.setToken(result.token);
+          this.setUserInfo(result);
+          router.push('/');
         } else {
           showToast({ message });
         }
@@ -42,5 +45,15 @@ export const useUserStore = defineStore('user', {
     getToken(): string | undefined {
       return this.token;
     },
+  },
+  // 开启数据缓存
+  persist: {
+    enabled: true,
+    // strategies: [
+    //   {
+    //     key: 'my_user',
+    //     storage: localStorage,
+    //   },
+    // ],
   },
 });

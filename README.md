@@ -31,7 +31,7 @@ sass
 
 vue
    - vue-router
-   - vuex | pinia
+   - vuex | pinia pinia-plugin-persist
    - vueuse
 
 

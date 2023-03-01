@@ -9,8 +9,7 @@ import { useUserStore } from '@/store/modules/user';
 import qs from 'qs';
 
 const CancelToken = axios.CancelToken;
-console.log(useUserStore);
-const userStore = useUserStore();
+//
 
 export interface HttpResponse {
   code: number;
@@ -74,6 +73,7 @@ class HttpRequest {
   interceptors(service: AxiosInstance) {
     service.interceptors.request.use(
       (config) => {
+        const userStore = useUserStore();
         const token = userStore.token;
         if (token) {
           // config.headers && config.headers.common['X-Access-Token'] = token;
