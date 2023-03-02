@@ -11,12 +11,38 @@ import workRouter from './modules/work';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/home',
-  },
-  {
-    path: '/home',
-    name: 'home',
     component: () => import('@/views/home/index.vue'),
+    meta: {
+      keepAlive: true,
+    },
+    redirect: 'message',
+    children: [
+      {
+        path: '/book',
+        name: 'book',
+        component: () => import('@/views/book/index.vue'),
+      },
+      {
+        path: '/email',
+        name: 'email',
+        component: () => import('@/views/email/index.vue'),
+      },
+      {
+        path: '/message',
+        name: 'message',
+        component: () => import('@/views/message/index.vue'),
+      },
+      {
+        path: '/work',
+        name: 'work',
+        component: () => import('@/views/work/index.vue'),
+      },
+      {
+        path: '/document',
+        name: 'document',
+        component: () => import('@/views/document/index.vue'),
+      },
+    ],
   },
   {
     path: '/login',
@@ -28,9 +54,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: () => import('@/views/user/register.vue'),
   },
-  // ...emailRouter,
-  // ...bookRouter,
-
+  ...emailRouter,
+  ...bookRouter,
+  ...messageRouter,
+  ...documentRouter,
+  ...workRouter,
   {
     path: '/:pathMatch(.*)*',
     redirect: '/error',

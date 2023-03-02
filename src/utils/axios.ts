@@ -76,8 +76,9 @@ class HttpRequest {
         const userStore = useUserStore();
         const token = userStore.token;
         if (token) {
+          config.headers['X-Access-Token'] = token;
           // config.headers && config.headers.common['X-Access-Token'] = token;
-          config.headers && config.headers.common.setAuthorization(`Bearer ${token}`);
+          // config.headers && config.headers.common.setAuthorization(`Bearer ${token}`);
         }
         // 生成唯一的key   判断请求
         const key = [
