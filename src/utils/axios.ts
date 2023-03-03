@@ -7,7 +7,7 @@ import axios, {
 } from 'axios';
 import { useUserStore } from '@/store/modules/user';
 import qs from 'qs';
-
+import { showToast } from 'vant';
 const CancelToken = axios.CancelToken;
 //
 
@@ -108,11 +108,18 @@ class HttpRequest {
         }
       },
       (err) => {
-        // let { message } = err;
-        // if (message == '取消重复请求') {
-        // } else {
-        //   Message.error('服务器错误');
-        // }
+        let { message } = err;
+        if (message == '取消重复请求') {
+          return Promise.reject(err);
+        } else if (message.includes('timeout')) {
+          message = '系统接口请求超时';
+        }
+        if (err.response?.data?.message == 'Token失效，请重新登录') {
+          message = err.response?.data?.message;
+          const userStore = useUserStore();
+          userStore.logout(true);
+        }
+        showToast({ message });
         return Promise.reject(err);
       },
     );

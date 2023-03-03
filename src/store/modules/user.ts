@@ -40,6 +40,11 @@ export const useUserStore = defineStore('user', {
         return Promise.reject(err);
       }
     },
+    async logout(goLogin = false) {
+      this.setToken('');
+      this.setUserInfo(null);
+      goLogin && router.push('/login');
+    },
   },
   getters: {
     getToken(): string | undefined {
