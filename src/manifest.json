@@ -1,0 +1,29 @@
+{
+  "name": "crx-demo",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "action": {
+    "default_icon": {
+      "16": "assets/icons/logo.png",
+      "48": "assets/icons/logo.png",
+      "128": "assets/icons/logo.png"
+    },
+    "default_title": "Demo Popup",
+    "default_popup": "popup/index.html"
+  },
+  "icons": {
+    "16": "assets/icons/logo.png",
+    "48": "assets/icons/logo.png",
+    "128": "assets/icons/logo.png"
+  },
+  "background": {
+    "service_worker": "background.ts"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/main.ts"],
+      "run_at": "document_start"
+    }
+  ]
+}

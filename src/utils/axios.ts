@@ -5,11 +5,9 @@ import axios, {
   // AxiosPromise,
   Canceler,
 } from 'axios';
-import { useMainStore } from '@/store';
 import qs from 'qs';
 
 const CancelToken = axios.CancelToken;
-const mainStore = useMainStore();
 export interface HttpResponse {
   code: number;
   data?: any;
@@ -72,11 +70,6 @@ class HttpRequest {
   interceptors(service: AxiosInstance) {
     service.interceptors.request.use(
       (config) => {
-        const token = mainStore.token;
-        if (token) {
-          // config.headers && config.headers.common['X-Access-Token'] = token;
-          config.headers && config.headers.common.setAuthorization(`Bearer ${token}`);
-        }
         // 生成唯一的key   判断请求
         const key = [
           config.url,
