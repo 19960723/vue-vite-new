@@ -4,6 +4,10 @@ import DefineOptions from 'unplugin-vue-define-options/vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { viteMockServe } from 'vite-plugin-mock';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import viteCompression from 'vite-plugin-compression';
 import crx from 'vite-plugin-crx-mv3';
 
 function pathResolve(dir: string) {
@@ -14,6 +18,12 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
   return {
     plugins: [
       vue(),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
       viteMockServe({
         mockPath: 'mock',
         localEnabled: command === 'serve',
@@ -22,6 +32,7 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
       crx({
         manifest: './src/manifest.json',
       }),
+      viteCompression(), // 压缩
     ],
     css: {
       // 🔥此处添加全局scss🔥
@@ -38,6 +49,15 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
           replacement: pathResolve('src') + '/',
         },
       ],
+    },
+    build: {
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
     },
   };
 });

@@ -1,5 +1,3 @@
-declare const chrome: any;
-
 // 右键菜单演示
 chrome.contextMenus.create({
   id: 'test',
