@@ -2,12 +2,11 @@
   <div class="color_red">404</div>
 </template>
 
-<script>
-  export default {};
+<script setup lang="ts">
 </script>
 
 <style>
-  .color_red {
-    color: red;
-  }
+.color_red {
+  color: red;
+}
 </style>
