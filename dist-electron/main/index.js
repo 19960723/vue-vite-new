@@ -2,6 +2,30 @@
 const electron = require("electron");
 const node_os = require("node:os");
 const node_path = require("node:path");
+const { Menu, MenuItem } = require("electron");
+const customMenu = new Menu();
+customMenu.append(new MenuItem({ label: "Menu Item 1" }));
+customMenu.append(new MenuItem({ label: "Menu Item 2" }));
+let mainWindow = null;
+function initWindow() {
+  mainWindow = electron.BrowserWindow.getFocusedWindow();
+}
+electron.ipcMain.on("get-window-info", (event) => {
+  event.returnValue = {
+    id: mainWindow == null ? void 0 : mainWindow.id,
+    title: mainWindow == null ? void 0 : mainWindow.getTitle(),
+    bounds: mainWindow == null ? void 0 : mainWindow.getBounds()
+  };
+});
+electron.ipcMain.on("hide-win", () => {
+  mainWindow == null ? void 0 : mainWindow.hide();
+});
+electron.ipcMain.on("show-win", () => {
+  mainWindow == null ? void 0 : mainWindow.hide();
+});
+electron.ipcMain.on("get-all-win", () => {
+  console.log("123");
+});
 process.env.DIST_ELECTRON = node_path.join(__dirname, "..");
 process.env.DIST = node_path.join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? node_path.join(process.env.DIST_ELECTRON, "../public") : process.env.DIST;
@@ -42,7 +66,7 @@ async function createWindow() {
     height,
     minWidth: 1200,
     minHeight: 640,
-    autoHideMenuBar: true,
+    // autoHideMenuBar: true,
     icon: node_path.join(process.env.PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,
@@ -72,6 +96,7 @@ async function createWindow() {
       electron.shell.openExternal(url2);
     return { action: "deny" };
   });
+  initWindow();
 }
 electron.app.whenReady().then(createWindow);
 electron.app.on("window-all-closed", () => {
@@ -95,7 +120,15 @@ electron.app.on("activate", () => {
   }
 });
 electron.ipcMain.handle("open-win", (_, arg) => {
+  var _a;
+  const winList = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const findWin = winList.find((v) => v.title == arg);
+  if (findWin) {
+    findWin.show();
+    return;
+  }
   const childWindow = new electron.BrowserWindow({
+    title: arg,
     webPreferences: {
       preload,
       nodeIntegration: true,

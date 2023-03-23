@@ -1,7 +1,8 @@
 import { app, BrowserWindow, shell, screen, systemPreferences, ipcMain } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
-
+import './menu';
+import { initWindow } from './window';
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -60,7 +61,6 @@ let win: BrowserWindow | null = null;
 const preload = join(__dirname, '../preload/index.js');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
-
 async function createWindow() {
   await checkAndApplyDevicePrivilege();
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -70,7 +70,7 @@ async function createWindow() {
     height,
     minWidth: 1200,
     minHeight: 640,
-    autoHideMenuBar: true,
+    // autoHideMenuBar: true,
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,
@@ -81,7 +81,6 @@ async function createWindow() {
       contextIsolation: false,
     },
   });
-
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     const installExtension = require('electron-devtools-installer');
@@ -109,6 +108,8 @@ async function createWindow() {
     return { action: 'deny' };
   });
   // win.webContents.on('will-navigate', (event, url) => { }) #344
+
+  initWindow();
 }
 
 app.whenReady().then(createWindow);
@@ -137,14 +138,20 @@ app.on('activate', () => {
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
+  const winList = BrowserWindow?.getAllWindows();
+  const findWin = winList.find((v) => v.title == arg);
+  if (findWin) {
+    findWin.show();
+    return;
+  }
   const childWindow = new BrowserWindow({
+    title: arg,
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
-
   if (process.env.VITE_DEV_SERVER_URL) {
     childWindow.loadURL(`${url}#${arg}`);
   } else {
