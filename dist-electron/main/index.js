@@ -9,6 +9,9 @@ customMenu.append(new MenuItem({ label: "Menu Item 2" }));
 let mainWindow = null;
 function initWindow() {
   mainWindow = electron.BrowserWindow.getFocusedWindow();
+  mainWindow == null ? void 0 : mainWindow.once("focus", () => {
+    initWindow();
+  });
 }
 electron.ipcMain.on("get-window-info", (event) => {
   event.returnValue = {
@@ -17,14 +20,50 @@ electron.ipcMain.on("get-window-info", (event) => {
     bounds: mainWindow == null ? void 0 : mainWindow.getBounds()
   };
 });
+electron.ipcMain.on("get-all-win", (event) => {
+  var _a;
+  const winList = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const win_list = winList.map((v) => {
+    return {
+      id: v.id,
+      title: v.title
+    };
+  });
+  event.returnValue = {
+    win_list
+  };
+  console.log(win_list);
+});
 electron.ipcMain.on("hide-win", () => {
   mainWindow == null ? void 0 : mainWindow.hide();
 });
 electron.ipcMain.on("show-win", () => {
-  mainWindow == null ? void 0 : mainWindow.hide();
+  mainWindow == null ? void 0 : mainWindow.show();
 });
-electron.ipcMain.on("get-all-win", () => {
-  console.log("123");
+electron.ipcMain.on("close-win", () => {
+  mainWindow == null ? void 0 : mainWindow.close();
+});
+electron.ipcMain.on("focus-win", () => {
+  mainWindow == null ? void 0 : mainWindow.focus();
+});
+electron.ipcMain.on("setAlwaysOnTop", (e, flag) => {
+  mainWindow == null ? void 0 : mainWindow.setAlwaysOnTop(flag);
+});
+electron.ipcMain.on("get-win-position", (e) => {
+  const pos = mainWindow == null ? void 0 : mainWindow.getPosition();
+  e.returnValue = {
+    pos
+  };
+});
+electron.ipcMain.on("set-win-position", (e, message) => {
+  const { x, y } = message;
+  mainWindow == null ? void 0 : mainWindow.setPosition(parseInt(x), parseInt(y));
+});
+electron.ipcMain.on("minimize", () => {
+  mainWindow == null ? void 0 : mainWindow.minimize();
+});
+electron.ipcMain.on("maximize", () => {
+  mainWindow == null ? void 0 : mainWindow.maximize();
 });
 process.env.DIST_ELECTRON = node_path.join(__dirname, "..");
 process.env.DIST = node_path.join(process.env.DIST_ELECTRON, "../dist");
@@ -121,22 +160,24 @@ electron.app.on("activate", () => {
 });
 electron.ipcMain.handle("open-win", (_, arg) => {
   var _a;
+  const { title } = arg;
   const winList = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
-  const findWin = winList.find((v) => v.title == arg);
+  const findWin = winList.find((v) => v.title == title);
   if (findWin) {
     findWin.show();
     return;
   }
   const childWindow = new electron.BrowserWindow({
-    title: arg,
+    ...arg,
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false
     }
   });
+  initWindow();
   if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`);
+    childWindow.loadURL(`${url}#${title}`);
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }

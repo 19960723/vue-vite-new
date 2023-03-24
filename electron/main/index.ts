@@ -138,22 +138,25 @@ app.on('activate', () => {
 
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
+  const { title } = arg;
   const winList = BrowserWindow?.getAllWindows();
-  const findWin = winList.find((v) => v.title == arg);
+  const findWin = winList.find((v) => v.title == title);
   if (findWin) {
     findWin.show();
     return;
   }
+
   const childWindow = new BrowserWindow({
-    title: arg,
+    ...arg,
     webPreferences: {
       preload,
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
+  initWindow();
   if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`);
+    childWindow.loadURL(`${url}#${title}`);
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }

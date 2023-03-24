@@ -9,9 +9,15 @@
 </template>
 
 <script setup lang="ts">
+  import { onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import { ipcRenderer } from 'electron';
   const router = useRouter();
+
+  onMounted(() => {
+    console.log('hello .....');
+  });
+
   const jumpHomePage = () => {
     router.push('/');
   };
@@ -23,7 +29,8 @@
     ipcRenderer.send('hide-win');
   };
   const getAllWin = () => {
-    ipcRenderer.send('get-all-win');
+    const win_list = ipcRenderer.sendSync('get-all-win');
+    console.log(win_list);
   };
 </script>
 

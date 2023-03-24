@@ -26,7 +26,9 @@
     });
   };
   const openNewWin = () => {
-    ipcRenderer.invoke('open-win', 'room');
+    ipcRenderer.invoke('open-win', {
+      title: 'room',
+    });
   };
   const openWinModal = () => {};
   const openPageModal = () => {};
