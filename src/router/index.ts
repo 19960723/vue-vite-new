@@ -15,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'room',
     component: () => import('@/views/room/index.vue'),
   },
+  {
+    path: '/empty',
+    name: 'empty',
+    component: () => import('@/views/empty/index.vue'),
+  },
 ];
 export const router = createRouter({
   history: createWebHashHistory(),

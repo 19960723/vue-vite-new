@@ -26,8 +26,11 @@
     });
   };
   const openNewWin = () => {
-    ipcRenderer.invoke('open-win', {
-      title: 'room',
+    // ipcRenderer.invoke('open-win', {
+    //   title: 'empty',
+    // });
+    ipcRenderer.send('routerWindow', {
+      name: 'room',
     });
   };
   const openWinModal = () => {};

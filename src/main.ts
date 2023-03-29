@@ -4,6 +4,7 @@ import './style.css';
 import App from './App.vue';
 import router from './router';
 import { ipcRenderer } from 'electron';
+import './utils/newPageListen'; // 创建newPage页面的监听
 import { registerGlobComp } from '@/components/registerGlobComp';
 
 if (window.isHasScreen === undefined) {

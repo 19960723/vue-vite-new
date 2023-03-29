@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell, screen, systemPreferences, ipcMain } from 'e
 import { release } from 'node:os';
 import { join } from 'node:path';
 import './menu';
-import { initWindow } from './window';
+import { initWindow, createNewPageWindow } from './window';
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -108,7 +108,7 @@ async function createWindow() {
     return { action: 'deny' };
   });
   // win.webContents.on('will-navigate', (event, url) => { }) #344
-
+  createNewPageWindow(); // 默认先创建一个空的窗口
   initWindow();
 }
 

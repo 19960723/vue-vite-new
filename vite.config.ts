@@ -1,7 +1,7 @@
 import { rmSync } from 'fs';
 import type { UserConfig, ConfigEnv } from 'vite';
 import { defineConfig } from 'vite';
-// import DefineOptions from 'unplugin-vue-define-options/vite';
+import DefineOptions from 'unplugin-vue-define-options/vite';
 import vue from '@vitejs/plugin-vue';
 import viteVesolve from 'vite-plugin-resolve';
 import { resolve } from 'path';
@@ -13,7 +13,6 @@ import pkg from './package.json';
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir);
 }
-// console.log(DefineOptions);
 export default defineConfig(({ command }: ConfigEnv): UserConfig => {
   rmSync('dist-electron', { recursive: true, force: true });
   const isServe = command === 'serve';
@@ -26,7 +25,7 @@ export default defineConfig(({ command }: ConfigEnv): UserConfig => {
         mockPath: 'mock',
         localEnabled: command === 'serve',
       }),
-      // DefineOptions(),
+      DefineOptions(),
       electron([
         {
           // Main-Process entry file of the Electron App.

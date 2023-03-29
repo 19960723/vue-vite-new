@@ -12,6 +12,7 @@
   import { onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import { ipcRenderer } from 'electron';
+  import { hide } from '@/utils/electron-api';
   const router = useRouter();
 
   onMounted(() => {
@@ -26,7 +27,7 @@
     console.log(windowInfo);
   };
   const hideWin = () => {
-    ipcRenderer.send('hide-win');
+    hide();
   };
   const getAllWin = () => {
     const win_list = ipcRenderer.sendSync('get-all-win');

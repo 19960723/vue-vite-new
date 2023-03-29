@@ -7,6 +7,13 @@ const customMenu = new Menu();
 customMenu.append(new MenuItem({ label: "Menu Item 1" }));
 customMenu.append(new MenuItem({ label: "Menu Item 2" }));
 let mainWindow = null;
+process.env.DIST_ELECTRON = node_path.join(__dirname, "..");
+process.env.DIST = node_path.join(process.env.DIST_ELECTRON, "../dist");
+process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? node_path.join(process.env.DIST_ELECTRON, "../public") : process.env.DIST;
+const url$1 = process.env.VITE_DEV_SERVER_URL;
+const preload$1 = node_path.join(__dirname, "../preload/index.js");
+const winList = [];
+const emptyList = [];
 function initWindow() {
   mainWindow = electron.BrowserWindow.getFocusedWindow();
   mainWindow == null ? void 0 : mainWindow.once("focus", () => {
@@ -22,8 +29,8 @@ electron.ipcMain.on("get-window-info", (event) => {
 });
 electron.ipcMain.on("get-all-win", (event) => {
   var _a;
-  const winList = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
-  const win_list = winList.map((v) => {
+  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const win_list = winList2.map((v) => {
     return {
       id: v.id,
       title: v.title
@@ -65,6 +72,85 @@ electron.ipcMain.on("minimize", () => {
 electron.ipcMain.on("maximize", () => {
   mainWindow == null ? void 0 : mainWindow.maximize();
 });
+electron.ipcMain.on("routerWindow", (e, routerObj) => {
+  var _a;
+  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const routerName = routerObj.name;
+  routerObj.title = routerObj.name;
+  let win2 = winList2.find((v) => v.title == routerName);
+  if (win2) {
+    sendMessage(win2, { router: routerObj });
+    win2.show();
+    return;
+  }
+  if (emptyList.length && routerObj.name) {
+    win2 = emptyList[0];
+    emptyList.length === 0 && createNewPageWindow();
+  }
+  if (!win2) {
+    routerObj.name && createNewPageWindow(routerObj);
+    emptyList.length === 0 && createNewPageWindow();
+    return;
+  }
+  win2.routerName = routerObj.name;
+  sendMessage(win2, { router: routerObj });
+});
+function createNewPageWindow(routerObj, parent2) {
+  if (process.env.NODE_ENV === "development" && winList.length + emptyList.length >= 4) {
+    routerObj && electron.dialog.showMessageBox({
+      title: "提示",
+      message: "开发模式,不要打开太多窗口"
+    });
+    return;
+  }
+  const browserOptions = {
+    icon: node_path.join(process.env.PUBLIC, "favicon.ico"),
+    // show: false,
+    ...routerObj,
+    webPreferences: {
+      preload: preload$1,
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  };
+  const win2 = new electron.BrowserWindow(browserOptions);
+  if (!routerObj) {
+    emptyList.push(win2);
+  }
+  win2.currentName = "newPageWindow";
+  const webContents = win2.webContents;
+  webContents.on("new-window", (event, url2) => {
+  });
+  webContents.on("before-input-event", (event, input) => {
+  });
+  win2.loadURL(`${url$1}#empty`);
+  win2.once("ready-to-show", () => {
+    sendMessage(win2, { ready: true });
+  });
+  win2.on("focus", () => {
+    if (!(win2 && win2.isEnabled())) {
+      if (win2.getChildWindows() && win2.getChildWindows().length) {
+        win2.getChildWindows().forEach((v) => {
+          v.show();
+        });
+      } else {
+        win2.setEnabled(true);
+      }
+    }
+  });
+  win2.on("close", () => {
+  });
+  win2.on("closed", () => {
+  });
+  win2.on("hide", () => {
+  });
+}
+function sendMessage(win2, text) {
+  if (!win2)
+    return;
+  console.log(text);
+  win2.webContents.send("newPageMessage", text);
+}
 process.env.DIST_ELECTRON = node_path.join(__dirname, "..");
 process.env.DIST = node_path.join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? node_path.join(process.env.DIST_ELECTRON, "../public") : process.env.DIST;
@@ -135,6 +221,7 @@ async function createWindow() {
       electron.shell.openExternal(url2);
     return { action: "deny" };
   });
+  createNewPageWindow();
   initWindow();
 }
 electron.app.whenReady().then(createWindow);
@@ -161,8 +248,8 @@ electron.app.on("activate", () => {
 electron.ipcMain.handle("open-win", (_, arg) => {
   var _a;
   const { title } = arg;
-  const winList = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
-  const findWin = winList.find((v) => v.title == title);
+  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const findWin = winList2.find((v) => v.title == title);
   if (findWin) {
     findWin.show();
     return;
