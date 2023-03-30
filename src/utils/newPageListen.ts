@@ -19,15 +19,16 @@ function changeRouter(routerObj: any) {
   routerObj.params && routerObj.params.noshow && hide();
   if (routerObj) {
     console.log(router);
+    document.title = routerObj.title;
     router
       .push(routerObj)
       .then(() => {
         console.log('=-==');
-        show();
+        show(routerObj.id);
       })
       .catch(() => {
         console.log('=-==');
-        show();
+        show(routerObj.id);
       });
   }
 }

@@ -90,3 +90,10 @@ window.onmessage = (ev) => {
 };
 
 setTimeout(removeLoading, 4999);
+
+// 定义要暴露给渲染进程使用的 API
+// contextBridge.exposeInMainWorld('myAPI', {
+//   getProcessMemoryUsage: () => process.getProcessMemoryInfo(),
+//   bar: 'Hello, world!',
+// });
+// contextBridge.exposeInMainWorld('electron', {});

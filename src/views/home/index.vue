@@ -3,6 +3,7 @@
     <h3>hello</h3>
     <button type="button" @click="toJumpPage">跳转页面</button>
     <button type="button" @click="openNewWin">打开新窗口</button>
+    <button type="button" @click="toMeetPage">Meet page</button>
     <button type="button" @click="openWinModal">打开窗口模态框</button>
     <button type="button" @click="openPageModal">打开页面模态框</button>
     <button type="button" @click="openConfirm">打开确认框</button>
@@ -18,7 +19,7 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ipcRenderer } from 'electron';
+  import { routerWindow } from '@/utils/electron-api';
   const router = useRouter();
   const toJumpPage = () => {
     router.push({
@@ -26,11 +27,13 @@
     });
   };
   const openNewWin = () => {
-    // ipcRenderer.invoke('open-win', {
-    //   title: 'empty',
-    // });
-    ipcRenderer.send('routerWindow', {
+    routerWindow({
       name: 'room',
+    });
+  };
+  const toMeetPage = () => {
+    routerWindow({
+      name: 'meet',
     });
   };
   const openWinModal = () => {};

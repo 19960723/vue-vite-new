@@ -17,19 +17,85 @@ const emptyList = [];
 function initWindow() {
   mainWindow = electron.BrowserWindow.getFocusedWindow();
   mainWindow == null ? void 0 : mainWindow.once("focus", () => {
+    console.log(mainWindow == null ? void 0 : mainWindow.title);
     initWindow();
   });
 }
-electron.ipcMain.on("get-window-info", (event) => {
+electron.ipcMain.on("electron_window", (event, message) => {
+  const { type, id } = message;
+  initWindow();
+  switch (type) {
+    case "get-window-info":
+      getWindowInfo(event);
+      break;
+    case "get-all-win":
+      getAllWin(event);
+      break;
+    case "hide-win":
+      hide();
+      break;
+    case "show-win":
+      if (id) {
+        show(id);
+      }
+      break;
+    case "close-win":
+      close();
+      break;
+    case "focus-win":
+      focus();
+      break;
+    case "setAlwaysOnTop":
+      setAlwaysOnTop(message);
+      break;
+    case "get-win-position":
+      getWinPosition(event);
+      break;
+    case "set-win-position":
+      setWinPosition(message);
+      break;
+    case "minimize":
+      minimize();
+      break;
+    case "maximize":
+      maximize();
+      break;
+  }
+});
+electron.ipcMain.on("routerWindow", (e, routerObj) => {
+  var _a;
+  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+  const routerName = routerObj.name;
+  routerObj.title = routerObj.name;
+  let win2 = winList2.find((v) => v.title == routerName);
+  if (win2) {
+    sendMessage(win2, { router: { ...routerObj, id: win2.id } });
+    win2.show();
+    return;
+  }
+  if (emptyList.length && routerObj.name) {
+    win2 = emptyList[0];
+    win2.title = routerName;
+    emptyList.splice(0, 1);
+    emptyList.length === 0 && createNewPageWindow();
+  }
+  if (!win2) {
+    routerObj.name && createNewPageWindow(routerObj);
+    emptyList.length === 0 && createNewPageWindow();
+    return;
+  }
+  win2.routerName = routerObj.name;
+  sendMessage(win2, { router: { ...routerObj, id: win2.id } });
+});
+function getWindowInfo(event) {
   event.returnValue = {
     id: mainWindow == null ? void 0 : mainWindow.id,
     title: mainWindow == null ? void 0 : mainWindow.getTitle(),
     bounds: mainWindow == null ? void 0 : mainWindow.getBounds()
   };
-});
-electron.ipcMain.on("get-all-win", (event) => {
-  var _a;
-  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+}
+function getAllWin(event) {
+  const winList2 = electron.BrowserWindow.getAllWindows();
   const win_list = winList2.map((v) => {
     return {
       id: v.id,
@@ -40,61 +106,46 @@ electron.ipcMain.on("get-all-win", (event) => {
     win_list
   };
   console.log(win_list);
-});
-electron.ipcMain.on("hide-win", () => {
+}
+function hide() {
   mainWindow == null ? void 0 : mainWindow.hide();
-});
-electron.ipcMain.on("show-win", () => {
+}
+function show(id) {
+  var _a;
+  if (id) {
+    const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
+    const findWin = winList2.find((v) => v.id == id);
+    findWin == null ? void 0 : findWin.show();
+    return;
+  }
   mainWindow == null ? void 0 : mainWindow.show();
-});
-electron.ipcMain.on("close-win", () => {
+}
+function close() {
   mainWindow == null ? void 0 : mainWindow.close();
-});
-electron.ipcMain.on("focus-win", () => {
+}
+function focus() {
   mainWindow == null ? void 0 : mainWindow.focus();
-});
-electron.ipcMain.on("setAlwaysOnTop", (e, flag) => {
+}
+function setAlwaysOnTop(message) {
+  const { flag } = message;
   mainWindow == null ? void 0 : mainWindow.setAlwaysOnTop(flag);
-});
-electron.ipcMain.on("get-win-position", (e) => {
+}
+function getWinPosition(event) {
   const pos = mainWindow == null ? void 0 : mainWindow.getPosition();
-  e.returnValue = {
+  event.returnValue = {
     pos
   };
-});
-electron.ipcMain.on("set-win-position", (e, message) => {
+}
+function setWinPosition(message) {
   const { x, y } = message;
   mainWindow == null ? void 0 : mainWindow.setPosition(parseInt(x), parseInt(y));
-});
-electron.ipcMain.on("minimize", () => {
+}
+function minimize() {
   mainWindow == null ? void 0 : mainWindow.minimize();
-});
-electron.ipcMain.on("maximize", () => {
+}
+function maximize() {
   mainWindow == null ? void 0 : mainWindow.maximize();
-});
-electron.ipcMain.on("routerWindow", (e, routerObj) => {
-  var _a;
-  const winList2 = (_a = electron.BrowserWindow) == null ? void 0 : _a.getAllWindows();
-  const routerName = routerObj.name;
-  routerObj.title = routerObj.name;
-  let win2 = winList2.find((v) => v.title == routerName);
-  if (win2) {
-    sendMessage(win2, { router: routerObj });
-    win2.show();
-    return;
-  }
-  if (emptyList.length && routerObj.name) {
-    win2 = emptyList[0];
-    emptyList.length === 0 && createNewPageWindow();
-  }
-  if (!win2) {
-    routerObj.name && createNewPageWindow(routerObj);
-    emptyList.length === 0 && createNewPageWindow();
-    return;
-  }
-  win2.routerName = routerObj.name;
-  sendMessage(win2, { router: routerObj });
-});
+}
 function createNewPageWindow(routerObj, parent2) {
   if (process.env.NODE_ENV === "development" && winList.length + emptyList.length >= 4) {
     routerObj && electron.dialog.showMessageBox({
@@ -105,7 +156,7 @@ function createNewPageWindow(routerObj, parent2) {
   }
   const browserOptions = {
     icon: node_path.join(process.env.PUBLIC, "favicon.ico"),
-    // show: false,
+    show: false,
     ...routerObj,
     webPreferences: {
       preload: preload$1,

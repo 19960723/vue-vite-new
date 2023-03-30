@@ -5,17 +5,17 @@
 
 <script lang="ts" setup>
   import { onMounted } from 'vue';
-  import { ipcRenderer } from 'electron';
+  import { hide } from '@/utils/electron-api';
 
   defineOptions({
     beforeRouteEnter(_to, _from, next) {
       next();
-      // ipcRenderer.send('hide-win');
+      // hide();
     },
   });
 
   onMounted(() => {
-    // ipcRenderer.send('hide-win');
+    // hide();
   });
 </script>
 

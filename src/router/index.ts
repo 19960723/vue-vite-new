@@ -16,6 +16,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/room/index.vue'),
   },
   {
+    path: '/meet',
+    name: 'meet',
+    component: () => import('@/views/meet/index.vue'),
+  },
+  {
+    path: '/share',
+    name: 'share',
+    component: () => import('@/views/share/index.vue'),
+  },
+  {
     path: '/empty',
     name: 'empty',
     component: () => import('@/views/empty/index.vue'),
